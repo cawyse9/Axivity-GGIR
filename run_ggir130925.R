@@ -35,12 +35,16 @@ setwd("C:/Users/cwyse/University of Edinburgh/Ambient-BD - Documents/Workstream 
 # 6  Transfer all results generated from GGIR to Z: for use by other researchers
 
 #put the studyID here
-studyID <- "abd5660"
+studyID <- "abd2421"
 
 # List all matching files in the directory using a wildcard
+# Ensure studyID has no extra spaces
+studyID <- trimws(studyID)
+
+# Robustly list only GGIR-compatible CWA files
 file_list <- list.files(
-  path = paste0("Z:/Axivity/cwa_files/", studyID),
-  pattern = paste0("acc_", studyID, "_.*\\.cwa$"),
+  path = file.path("Z:/Axivity/cwa_files", studyID),
+  pattern = paste0("^acc_", studyID, "_.*\\.cwa$"),  # match anything after studyID
   full.names = TRUE
 )
 
@@ -69,8 +73,8 @@ dir.create(outputdir, recursive = TRUE)
 cat("Directory recreated:", outputdir, "\n")
 
 # define directory for testing demo
-datadir <- "C:/Users/cwyse/Downloads/17864_0000000000.cwa"
-outputdir <- "C:/temp"  
+#datadir <- "C:/Users/cwyse/Downloads/17864_0000000000.cwa"
+#outputdir <- "C:/temp"  
 #datadir <- "C:/temp_GGIR_output/acc_abd2201_90days_6026273.cwa"
 #datadir <- "C:/temp_GGIR_output/acc_abd2421_110days_6032662.cwa"
 
@@ -82,7 +86,7 @@ outputdir <- "C:/temp"
 #======================================================================================
 
 mode = c(1,2,3,4,5)
-studyname = "AmbientBD" 
+studyname = studyID
 f0 = 1  # file number to start
 f1 = 2  # file number to end
 
@@ -206,10 +210,11 @@ shell.exec(pdffile)
 # Extract studyID from the single cwa file
 cwa_name <- list.files(datadir)[1]  # Get the single file name
 name <- substr(cwa_name, start = 5, stop = 11)  # Extract the study ID (first 7 characters)
+name <- studyID
 
 # copy the csv file for each participant to csv_files results folder on Z:
 new_filename <- paste0("acc_timeseries_", name, "_",format(Sys.Date(), "%d%m%Y"), ".RData")
-add_path_to_csv <- paste0("output_",name,"/meta/csv")
+add_path_to_csv <- paste0("output_/",studyID,"/meta/csv")
 csv_folder <- file.path(outputdir, add_path_to_csv)
 rdata_file <- list.files(csv_folder,  full.names = TRUE) #assuming only one file 
 new_file_path <- file.path("Z:/Axivity/Results/csv_files", new_filename)
@@ -217,13 +222,11 @@ file.copy(rdata_file, new_file_path)
 
 # move the ggir data for each participant to ggir_variables folder on Z:
 new_filename_ggir <- paste0("acc_ggir_", name, ".csv")
-add_path_to_ggir_data <- paste0("output_",name,"/Results")
+add_path_to_ggir_data <- paste0("output_",studyID,"/","/Results")
 ggir_folder <- file.path(outputdir, add_path_to_ggir_data) #define the folder with sleep data and other resutls
 data_file_ggir <- list.files(ggir_folder, pattern = "part4_summary_sleep_cleaned.csv", full.names = TRUE) #get the sleep data we need
 new_file_path_ggir <- file.path("Z:/Axivity/Results/ggir_variables", new_filename_ggir)
 file.copy(data_file_ggir, new_file_path_ggir)
-
-
 
 
 #================================================================================================
