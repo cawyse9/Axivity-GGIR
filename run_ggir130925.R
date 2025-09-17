@@ -35,7 +35,7 @@ setwd("C:/Users/cwyse/University of Edinburgh/Ambient-BD - Documents/Workstream 
 # 6  Transfer all results generated from GGIR to Z: for use by other researchers
 
 #put the studyID here
-studyID <- "abd1111"
+studyID <- "abd1636"
 
 # List all matching files in the directory using a wildcard
 # Ensure studyID has no extra spaces
@@ -167,8 +167,8 @@ GGIR(
   
   #------------------------------# Part 6 parameters: #------------------------------
   
-  cosinor = TRUE, # we will do that separately ourselves
-  part6CR = TRUE,
+  #cosinor = TRUE, # we will do that separately ourselves
+  #part6CR = TRUE,
   
   
   #----------------------------------# Report generation #------------------------------
@@ -212,13 +212,19 @@ file.copy(rdata_file, new_file_path)
 
 # move the ggir data for each participant to ggir_variables folder on Z:
 new_filename_ggir <- paste0("acc_ggir_", name, ".csv")
-add_path_to_ggir_data <- paste0("output_",studyID,"/","/Results")
+new_filename_ggir_cosinor <- paste0("acc_ggir_", name,"_cosinor.csv")
+
+add_path_to_ggir_data <- paste0("output_",studyID,"/results")
 ggir_folder <- file.path(outputdir, add_path_to_ggir_data) #define the folder with sleep data and other resutls
-data_file_ggir <- list.files(ggir_folder, pattern = "part4_summary_sleep_full.csv", full.names = TRUE) #get the sleep data we need
+
+data_file_ggir <- list.files(ggir_folder, pattern = "part4_nightsummary_sleep_full.csv", full.names = TRUE, recursive = TRUE) #get the sleep data we need
+#data_file_ggir_cosinor <- list.files(ggir_folder, pattern = "part6_summary.csv", full.names = TRUE, recursive = TRUE) #get the sleep data we need
+
 new_file_path_ggir <- file.path("Z:/Axivity/Results/ggir_variables", new_filename_ggir)
+#new_file_path_ggir_cosinor <- file.path("Z:/Axivity/Results/ggir_variables", new_filename_ggir_cosinor)
+
 file.copy(data_file_ggir, new_file_path_ggir)
-
-
+#file.copy(data_file_ggir_cosinor, new_file_path_ggir_cosinor)
 #================================================================================================
 #
 # Stage 5 Transfer all generated GGIR data to Z: and delete temporary local files
